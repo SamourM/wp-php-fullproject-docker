@@ -1,0 +1,27 @@
+#192.168.123.75
+server {
+    listen 80;
+    listen [::]:80;
+    root /var/www/html/wordpress;
+    index  index.php index.html index.htm;
+    server_name localhost;
+
+    location / {
+                try_files $uri $uri/ /index.php?q=$uri&$args;
+#try_files $uri $uri/ /index.php?$args;        
+    }
+
+
+    location ~ \.php$ {
+    fastcgi_split_path_info  ^(.+\.php)(/.+)$;
+    fastcgi_index            index.php;
+    fastcgi_pass             unix:/var/run/php/php7.2-fpm.sock; #Ubuntu 17.10
+  # fastcgi_pass             unix:/var/run/php/php7.0-fpm.sock; #Ubuntu 17.04
+    include                  fastcgi_params;
+    fastcgi_param   PATH_INFO       $fastcgi_path_info;
+    fastcgi_param   SCRIPT_FILENAME $document_root$fastcgi_script_name;
+    }
+
+}
+
+
